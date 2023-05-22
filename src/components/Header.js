@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import logoPath from '../images/logo.svg';
 
-function Header(props) {
+function Header({userData, onLogOut}) {
   return (
     <header className="header">
       <img className="header__logo" src={logoPath} alt="Логотип Место" />
@@ -10,10 +10,10 @@ function Header(props) {
         {/* Главная, если авторизован */}
         <Route exact path="/" element={
           <div className="header__info">
-            <p className="header__email">{props.userData}</p>
+            <p className="header__email">{userData}</p>
             <button 
               className="header__button" 
-              onClick={props.onLogOut}
+              onClick={onLogOut}
             >
               Выйти
             </button>

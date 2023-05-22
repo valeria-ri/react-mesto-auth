@@ -24,8 +24,6 @@ function App() {
     imgPath: '',
     title: ''
   })
-  const [registrationError, setRegistrationError] = useState("");
-  const [loginError, setLoginError] = useState("");
   const [userData, setUserData] = useState("");
   const navigate = useNavigate();
 
@@ -51,38 +49,38 @@ function App() {
 
     auth
       .getUserData(token)
-      .then((user) => {
-        setUserData(user.data.email);
+      .then(() => {
         setIsLoggedIn(true);
         navigate("/");
       })
-      .catch(err => console.log(err))
+      .catch(console.error)
       .finally(() => setIsLoading(false))
   }, [token, navigate])
 
   useEffect(() => {
     api.getUserInfo()
       .then(data => setCurrentUser(data))
-      .catch(err => console.log(err))
+      .catch(console.error)
   }, [])
 
   useEffect(() => {
     api.getInitialCards()
       .then(data => setCards(data))
-      .catch(err => console.log(err))
+      .catch(console.error)
   }, [])
 
   function registerUser({password, email}) {
     auth
     .register(password, email)
-    .then(() => {
+    .then((res) => {
+      setUserData(res.data.email);
       setMessage({
         imgPath: successTooltip,
         title: "Вы успешно зарегистрировались!",
       })
       navigate("/sign-in");
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       setMessage({
         imgPath: unsuccessTooltip,
@@ -137,6 +135,22 @@ function App() {
     setIsInfoTooltipOpen(false);
   }
 
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if(isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen]) 
+
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -147,13 +161,13 @@ function App() {
       .then(newCard =>
         setCards(state => state.map((c) => c._id === card._id ? newCard : c))
       )
-      .catch(err => console.log(err))
+      .catch(console.error)
   }
 
   function handleCardDelete(card) {
     api.deleteCard(card._id)
-      .then(() => setCards(cards.filter(c => c !== card)))
-      .catch(err => console.log(err))
+      .then(() =>  setCards((state) => state.filter((item) => item._id !== card._id)))
+      .catch(console.error)
   }
 
   function handleUpdateUser(user) {
@@ -162,7 +176,7 @@ function App() {
         setCurrentUser(data);
         closeAllPopups();
       })
-      .catch(err => console.log(err))
+      .catch(console.error)
   }
 
   function handleUpdateAvatar(user) {
@@ -171,7 +185,7 @@ function App() {
         setCurrentUser(data);
         closeAllPopups();
       })
-      .catch(err => console.log(err))
+      .catch(console.error)
   }
 
   function handleAddPlaceSubmit(card) {
@@ -180,7 +194,7 @@ function App() {
       setCards([newCard, ...cards]);
       closeAllPopups();
     })
-    .catch(err => console.log(err))
+    .catch(console.error)
   }
 
   if (isLoading) {
@@ -192,7 +206,6 @@ function App() {
       <div className="page">
 
         <Header 
-          // isLoggedIn={isLoggedIn}
           userData={userData}
           onLogOut={logOut}
         />
@@ -209,7 +222,6 @@ function App() {
             element={
               <Login 
                loginUser={loginUser}
-               errorMessage={loginError}
               />
             } 
           />
@@ -218,7 +230,6 @@ function App() {
             element={
               <Register 
                 registerUser={registerUser}
-                errorMessage={registrationError}
               />
             }
           />

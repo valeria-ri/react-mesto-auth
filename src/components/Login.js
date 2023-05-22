@@ -1,7 +1,7 @@
 import React from 'react';
 import useForm from '../hooks/useForm';
 
-const Login = ({loginUser, errorMessage}) => {
+const Login = ({loginUser}) => {
 
   const { form, handleChange } = useForm({
     email: "",
@@ -16,7 +16,6 @@ const Login = ({loginUser, errorMessage}) => {
   return (
     <section className="auth">
       <h2 className="auth__title">Вход</h2>
-      <p className="auth__error">{errorMessage}</p>
       <form onSubmit={handleSubmit} className="auth__form">
         <label htmlFor="email" className="auth__form-field">
           <input 

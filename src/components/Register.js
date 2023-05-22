@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import useForm from '../hooks/useForm';
 
-const Register = ({registerUser, errorMessage}) => {
+const Register = ({registerUser}) => {
   
   const { form, handleChange } = useForm({
     email: "",
@@ -17,7 +17,6 @@ const Register = ({registerUser, errorMessage}) => {
   return (
     <section className="auth">
       <h2 className="auth__title">Регистрация</h2>
-      <p className="auth__error">{errorMessage}</p>
       <form onSubmit={handleSubmit} className="auth__form">
         <label htmlFor="email" className="auth__form-field">
           <input 
