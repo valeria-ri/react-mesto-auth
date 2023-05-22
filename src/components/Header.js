@@ -12,7 +12,7 @@ function Header(props) {
           <div className="header__info">
             <p className="header__email">{props.userData}</p>
             <button 
-              className="header__button header__link" 
+              className="header__button" 
               onClick={props.onLogOut}
             >
               Выйти

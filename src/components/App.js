@@ -13,10 +13,17 @@ import AddPlacePopup from './AddPlacePopup';
 import * as auth from '../utils/auth';
 import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import successTooltip from "../images/successTooltip.svg";
+import unsuccessTooltip from "../images/unsuccessTooltip.svg";
+import InfoTooltip from './InfoTooltip';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
+  const [message, setMessage] = useState({
+    imgPath: '',
+    title: ''
+  })
   const [registrationError, setRegistrationError] = useState("");
   const [loginError, setLoginError] = useState("");
   const [userData, setUserData] = useState("");
@@ -25,6 +32,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen]  = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
@@ -46,7 +54,7 @@ function App() {
       .then((user) => {
         setUserData(user.data.email);
         setIsLoggedIn(true);
-        navigate("/my-profile");
+        navigate("/");
       })
       .catch(err => console.log(err))
       .finally(() => setIsLoading(false))
@@ -67,25 +75,37 @@ function App() {
   function registerUser({password, email}) {
     auth
     .register(password, email)
-    .then((res) => {
-      localStorage.setItem("jwt", res.jwt);
-      setToken(res.jwt);
+    .then(() => {
+      setMessage({
+        imgPath: successTooltip,
+        title: "Вы успешно зарегистрировались!",
+      })
+      navigate("/sign-in");
     })
     .catch(err => {
       console.log(err);
-      setRegistrationError("Что-то пошло не так! Попробуйте ещё раз.")
+      setMessage({
+        imgPath: unsuccessTooltip,
+        title: "Что-то пошло не так! Попробуйте ещё раз.",
+      })
     })
+    .finally(() => setIsInfoTooltipOpen(true))
   }
 
   function loginUser({password, email}) {
     auth.authorize(password, email)
     .then((res) => {
-      localStorage.setItem("jwt", res.jwt);
-      setToken(res.jwt);
+      setIsLoggedIn(true);
+      localStorage.setItem("jwt", res.token);
+      navigate("/");
     })
     .catch(err => {
       console.log(err);
-      setLoginError("Неправильный логин или пароль!")
+      setMessage({
+        imgPath: unsuccessTooltip,
+        title: "Что-то пошло не так! Попробуйте ещё раз.",
+      })
+      setIsInfoTooltipOpen(true)
     })
   }
 
@@ -114,6 +134,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard(null);
+    setIsInfoTooltipOpen(false);
   }
 
   function handleCardClick(card) {
@@ -180,7 +201,7 @@ function App() {
           <Route
             path="*"
             element={
-              isLoggedIn ? <Navigate to="/my-profile" /> : <Navigate to="/sign-in" />
+              isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
             }
           />
           <Route 
@@ -202,10 +223,10 @@ function App() {
             }
           />
           <Route 
-            path="/my-profile"
+            path="/"
             element={
               <ProtectedRouteElement 
-                path="/my-profile"
+                path="/"
                 component={Main}
                 onEditProfile = {handleEditProfileClick}
                 onAddPlace = {handleAddPlaceClick}
@@ -219,7 +240,16 @@ function App() {
             }
           />
         </Routes>
+        
         {isLoggedIn && <Footer />}
+
+        <InfoTooltip
+          isOpen = {isInfoTooltipOpen}
+          onClose = {closeAllPopups}
+          name = 'infotooltip'
+          imgPath = {message.imgPath}
+          title = {message.title}
+        />
 
         <EditProfilePopup 
           isOpen = {isEditProfilePopupOpen}

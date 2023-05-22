@@ -1,0 +1,5 @@
+.header__info {
+  margin: 6px 0 0;
+  display: flex;
+  gap: 24px;
+}
