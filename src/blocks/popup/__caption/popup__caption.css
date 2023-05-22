@@ -1,0 +1,8 @@
+.popup__caption {
+  max-width: 75vw;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 400;
+  margin: 10px 0 0;
+  padding: 0;
+}

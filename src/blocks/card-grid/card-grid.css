@@ -1,0 +1,18 @@
+.card-grid {
+  margin: 50px 0 66px;
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 960px) {
+  .card-grid {
+    padding: 0 50px;
+    box-sizing: border-box;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .card-grid {
+    margin: 36px 0 48px;
+  }
+}

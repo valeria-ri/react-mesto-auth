@@ -1,0 +1,25 @@
+.auth__input {
+  width: 100%;
+  line-height: 1.21;
+  font-weight: 400;
+  font-size: 14px;
+  color: #CCC;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px solid #CCC;
+  outline: 0;
+  padding-bottom: 8px;
+  margin: 0;
+}
+
+.auth__input:valid {
+  color: #FFF;
+  border-bottom: 2px solid #FFF;
+}
+
+/* .auth__input:-webkit-autofill,
+.auth__input:-webkit-autofill:hover,
+.auth__input:-webkit-autofill:focus,
+.auth__input:-webkit-autofill:active {
+  transition: background-color 5000s easy-in-out 0s;
+} */
