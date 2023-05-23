@@ -49,8 +49,9 @@ function App() {
 
     auth
       .getUserData(token)
-      .then(() => {
+      .then((res) => {
         setIsLoggedIn(true);
+        setUserData(res.data.email);
         navigate("/");
       })
       .catch(console.error)
@@ -93,6 +94,7 @@ function App() {
   function loginUser({password, email}) {
     auth.authorize(password, email)
     .then((res) => {
+      setUserData(email);
       setIsLoggedIn(true);
       localStorage.setItem("jwt", res.token);
       navigate("/");
